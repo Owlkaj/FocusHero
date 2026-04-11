@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8"><title>Edit Player - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { theme: { extend: { colors: { retroBlue: '#00f0ff', retroRed: '#ff2a5f' }, fontFamily: { mono: ['"Courier New"', 'monospace'] } } } }</script>
+    <style>
+        .bg-grid-pattern { background-size: 40px 40px; background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px); }
+    </style>
+</head>
+<body class="bg-[#0f172a] text-white font-mono min-h-screen flex items-center justify-center p-6 relative z-0 overflow-hidden">
+    <div class="fixed inset-0 w-full h-full z-[-1] bg-grid-pattern"></div>
+    
+    <div class="bg-slate-900/80 backdrop-blur-md border border-retroRed/40 p-8 rounded-xl w-full max-w-md shadow-[0_0_30px_rgba(255,42,95,0.15)]">
+        <h1 class="text-xl font-bold text-retroRed mb-6 tracking-widest drop-shadow-[0_0_5px_rgba(255,42,95,0.5)]">>> EDIT_PLAYER_DATA</h1>
+        
+        <form action="/admin/edit-user/<%= user.id %>" method="POST" class="space-y-5">
+            <div>
+                <label class="block text-xs text-gray-400 tracking-widest mb-2">USERNAME</label>
+                <input type="text" name="username" value="<%= user.username %>" class="w-full bg-slate-800/50 border border-slate-600 text-white p-2.5 rounded outline-none focus:border-retroBlue transition-colors">
+            </div>
+            <div>
+                <label class="block text-xs text-gray-400 tracking-widest mb-2">EMAIL</label>
+                <input type="email" name="email" value="<%= user.email %>" class="w-full bg-slate-800/50 border border-slate-600 text-white p-2.5 rounded outline-none focus:border-retroBlue transition-colors">
+            </div>
+            <div>
+                <label class="block text-xs text-gray-400 tracking-widest mb-2">ROLE</label>
+                <select name="role" class="w-full bg-slate-800/50 border border-slate-600 text-white p-2.5 rounded outline-none focus:border-retroBlue appearance-none">
+                    <option value="user" <%= user.role === 'user' ? 'selected' : '' %>>USER</option>
+                    <option value="admin" <%= user.role === 'admin' ? 'selected' : '' %>>ADMIN</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs text-gray-400 tracking-widest mb-2">TOTAL XP (POINTS)</label>
+                <input type="number" name="total_points" value="<%= user.total_points %>" class="w-full bg-slate-800/50 border border-slate-600 text-white p-2.5 rounded outline-none focus:border-retroBlue transition-colors">
+            </div>
+            <div class="flex gap-4 pt-4">
+                <a href="/admin" class="flex-1 text-center bg-transparent border border-slate-600 text-gray-400 hover:text-white py-2.5 rounded hover:bg-slate-800 transition-colors font-bold tracking-widest text-sm">CANCEL</a>
+                <button type="submit" class="flex-1 bg-retroRed/20 text-retroRed border border-retroRed hover:bg-retroRed hover:text-white font-bold py-2.5 rounded transition-all shadow-[0_0_10px_rgba(255,42,95,0.2)] tracking-widest text-sm">SAVE_CHANGES</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

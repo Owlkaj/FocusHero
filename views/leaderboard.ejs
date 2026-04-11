@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard - FocusHero</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { theme: { extend: { colors: { retroGold: '#ffd700', retroBlue: '#00f0ff' }, fontFamily: { mono: ['"Courier New"', 'monospace'] } } } }</script>
+    <style>
+        @keyframes blob { 0% { transform: translate(0px, 0px) scale(1); } 33% { transform: translate(30px, -50px) scale(1.1); } 66% { transform: translate(-20px, 20px) scale(0.9); } 100% { transform: translate(0px, 0px) scale(1); } }
+        .animate-blob { animation: blob 10s infinite alternate ease-in-out; } .animation-delay-2000 { animation-delay: 2s; }
+        .bg-grid-pattern { background-size: 40px 40px; background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px); }
+    </style>
+</head>
+<body class="bg-[#0f172a] text-white font-mono p-6 min-h-screen flex flex-col items-center relative z-0 overflow-x-hidden">
+    <div class="fixed inset-0 w-full h-full z-[-1]">
+        <div class="absolute inset-0 bg-grid-pattern"></div>
+        <div class="absolute top-[10%] left-[20%] w-[500px] h-[500px] bg-yellow-500/10 rounded-full mix-blend-screen filter blur-[100px] animate-blob"></div>
+    </div>
+
+    <nav class="w-full max-w-2xl flex justify-between items-center border-b border-slate-700 pb-4 mb-8">
+        <h1 class="text-2xl font-bold text-retroGold drop-shadow-[0_0_8px_rgba(255,215,0,0.6)] tracking-widest">>> HALL_OF_FAME</h1>
+        <a href="javascript:history.back()" class="text-gray-400 hover:text-white transition-colors tracking-widest text-sm"><< RETURN</a>
+    </nav>
+
+    <div class="w-full max-w-2xl bg-slate-900/70 backdrop-blur-md border border-retroGold/30 rounded-xl p-8 shadow-[0_0_30px_rgba(255,215,0,0.1)]">
+        <h2 class="text-center text-gray-400 mb-8 tracking-widest text-sm">GLOBAL TOP 10 PLAYERS</h2>
+        
+        <div class="space-y-4">
+            <% topPlayers.forEach((player, index) => { %>
+                <div class="flex justify-between items-center bg-slate-800/50 border-l-4 <%= index === 0 ? 'border-retroGold shadow-[inset_0_0_15px_rgba(255,215,0,0.15)] p-5' : 'border-slate-600 p-4' %> rounded hover:bg-slate-800 transition-colors">
+                    <div class="flex items-center gap-5">
+                        <span class="text-2xl font-bold <%= index === 0 ? 'text-retroGold drop-shadow-[0_0_8px_rgba(255,215,0,0.8)]' : (index === 1 ? 'text-gray-300' : (index === 2 ? 'text-amber-600' : 'text-slate-500')) %>">
+                            #<%= index + 1 %>
+                        </span>
+                        <span class="text-lg font-bold tracking-wider text-white"><%= player.username %></span>
+                    </div>
+                    <span class="text-retroGold font-bold tracking-widest bg-yellow-500/10 px-3 py-1 rounded border border-yellow-500/20"><%= player.total_points %> XP</span>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</body>
+</html>

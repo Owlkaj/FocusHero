@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - FocusHero</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { retroBlue: '#00f0ff', retroGold: '#ffd700', retroPurple: '#b026ff' },
+                    fontFamily: { mono: ['"Courier New"', 'monospace'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Animasi pergerakan cahaya */
+        @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animate-blob {
+            animation: blob 10s infinite alternate ease-in-out;
+        }
+        /* Penundaan waktu agar cahayanya tidak bergerak bersamaan */
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
+
+        /* Garis grid modern tipis */
+        .bg-grid-pattern {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+    </style>
+</head>
+<body class="bg-[#0f172a] text-white font-mono min-h-screen p-6 relative z-0 overflow-x-hidden">
+    
+    <div class="fixed inset-0 w-full h-full z-[-1]">
+        <div class="absolute inset-0 bg-grid-pattern"></div>
+        <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-cyan-500/20 rounded-full mix-blend-screen filter blur-[100px] animate-blob"></div>
+        <div class="absolute top-[20%] right-[-10%] w-[400px] h-[400px] bg-purple-600/20 rounded-full mix-blend-screen filter blur-[100px] animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-[-20%] left-[20%] w-[600px] h-[600px] bg-blue-600/20 rounded-full mix-blend-screen filter blur-[100px] animate-blob animation-delay-4000"></div>
+    </div>
+    <nav class="flex justify-between items-center border-b border-retroBlue/30 pb-4 mb-8 relative z-10">
+        <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-retroBlue to-blue-500 drop-shadow-[0_0_10px_rgba(0,240,255,0.8)] tracking-wider">
+            >> FOCUS_HERO
+        </h1>
+        <div class="flex items-center gap-6">
+            
+            <% if (user.role === 'admin') { %>
+                <a href="/admin" class="bg-red-600/20 text-red-400 border border-red-500 px-4 py-1.5 rounded uppercase text-xs font-bold tracking-widest hover:bg-red-600 hover:text-white transition-all shadow-[0_0_15px_rgba(255,0,0,0.3)] hover:shadow-[0_0_25px_rgba(255,0,0,0.6)]">
+                    [ ADMIN_PANEL ]
+                </a>
+            <% } %>
+            
+            <div class="flex flex-col items-end">
+                <span class="text-gray-400 text-xs tracking-widest">PLAYER_ID:</span>
+                <span class="text-white font-bold text-lg drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]"><%= user.username %></span>
+                <span class="text-[10px] bg-retroPurple/20 text-retroPurple border border-retroPurple px-2 py-0.5 rounded uppercase font-bold tracking-widest mt-1 shadow-[0_0_10px_rgba(176,38,255,0.4)]">
+                    <%= title %>
+                </span>
+            </div>
+
+            <a href="/logout" class="text-gray-400 hover:text-red-500 transition-colors text-sm font-bold border-l border-gray-700 pl-6">
+                [ LOGOUT ]
+            </a>
+        </div>
+    </nav>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 relative z-10">
+        <div class="bg-slate-900/60 backdrop-blur-md border border-retroBlue/40 p-6 rounded-xl text-center shadow-[inset_0_0_20px_rgba(0,240,255,0.05),0_0_15px_rgba(0,240,255,0.2)] group hover:border-retroBlue transition-all duration-300 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-16 h-16 bg-retroBlue opacity-5 group-hover:opacity-20 transition-opacity rounded-bl-full"></div>
+            <h2 class="text-gray-400 text-xs tracking-widest mb-1">TOTAL_XP</h2>
+            <p class="text-4xl font-bold text-retroGold drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]"><%= user.total_points %></p>
+        </div>
+        <div class="bg-slate-900/60 backdrop-blur-md border border-green-500/40 p-6 rounded-xl text-center shadow-[inset_0_0_20px_rgba(34,197,94,0.05),0_0_15px_rgba(34,197,94,0.1)] group hover:border-green-500 transition-all duration-300 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-16 h-16 bg-green-500 opacity-5 group-hover:opacity-20 transition-opacity rounded-bl-full"></div>
+            <h2 class="text-gray-400 text-xs tracking-widest mb-1">ACTIVE_QUESTS</h2>
+            <p class="text-4xl font-bold text-green-400 drop-shadow-[0_0_10px_rgba(34,197,94,0.5)]"><%= habits.length %></p>
+        </div>
+        <div class="bg-slate-900/60 backdrop-blur-md border border-retroPurple/40 p-6 rounded-xl text-center shadow-[inset_0_0_20px_rgba(176,38,255,0.05),0_0_15px_rgba(176,38,255,0.2)] group hover:border-retroPurple transition-all duration-300 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-16 h-16 bg-retroPurple opacity-5 group-hover:opacity-20 transition-opacity rounded-bl-full"></div>
+            <h2 class="text-gray-400 text-xs tracking-widest mb-1">BADGES_UNLOCKED</h2>
+            <p class="text-4xl font-bold text-retroPurple drop-shadow-[0_0_10px_rgba(176,38,255,0.5)]"><%= badgeCount %></p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
+        
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-slate-900/70 backdrop-blur-md border border-slate-700 p-8 rounded-xl shadow-2xl">
+                <div class="flex justify-between items-center mb-8 border-b border-slate-700 pb-4">
+                    <h2 class="text-xl font-bold text-white tracking-widest">>> DAFTAR_QUEST_HARIAN</h2>
+                    <a href="/add-habit" class="bg-retroBlue/10 text-retroBlue border border-retroBlue hover:bg-retroBlue hover:text-black font-bold py-2 px-6 rounded transition-all duration-300 text-sm tracking-wider shadow-[0_0_10px_rgba(0,240,255,0.3)] hover:shadow-[0_0_20px_rgba(0,240,255,0.8)]">
+                        + ASSIGN NEW
+                    </a>
+                </div>
+
+                <div class="space-y-4">
+                    <% if (habits.length > 0) { %>
+                        <% habits.forEach(habit => { %>
+                            <div class="group bg-slate-800/50 border border-slate-700 p-5 rounded-lg flex justify-between items-center hover:-translate-y-1 hover:border-retroBlue hover:bg-slate-800 transition-all duration-300 hover:shadow-[0_8px_20px_rgba(0,240,255,0.15)]">
+                                <div>
+                                    <h3 class="font-bold text-white text-lg tracking-wide group-hover:text-retroBlue transition-colors"><%= habit.title %></h3>
+                                    <p class="text-gray-400 text-sm mt-1"><%= habit.description %></p>
+                                    <div class="flex items-center gap-2 mt-3">
+                                        <span class="text-xs bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded border border-orange-500/30">
+                                            🔥 STREAK: <%= habit.streak_count %>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="flex gap-3 opacity-80 group-hover:opacity-100 transition-opacity">
+                                    <form action="/complete-habit/<%= habit.id %>" method="POST">
+                                        <button class="bg-green-500/20 text-green-400 border border-green-500 hover:bg-green-500 hover:text-black font-bold py-1.5 px-4 rounded text-sm transition-all shadow-[0_0_10px_rgba(34,197,94,0.2)] hover:shadow-[0_0_15px_rgba(34,197,94,0.6)]">
+                                            ✓ DONE
+                                        </button>
+                                    </form>
+                                    <form action="/delete-habit/<%= habit.id %>" method="POST">
+                                        <button class="bg-red-500/10 text-red-400 hover:text-white hover:bg-red-600 font-bold py-1.5 px-3 rounded text-sm transition-all border border-transparent hover:border-red-500">
+                                            ✕
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <div class="text-center py-10 border-2 border-dashed border-slate-700 rounded-lg">
+                            <p class="text-gray-400 italic tracking-widest">NO_ACTIVE_QUESTS_FOUND</p>
+                            <p class="text-sm text-gray-500 mt-2">Tekan [+ ASSIGN NEW] untuk memulai perjalananmu.</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+            <div class="bg-slate-900/70 backdrop-blur-md border border-retroGold/30 p-6 rounded-xl shadow-[0_0_20px_rgba(255,215,0,0.1)]">
+                <h2 class="text-lg font-bold text-retroGold mb-6 tracking-widest text-center drop-shadow-[0_0_8px_rgba(255,215,0,0.6)]">
+                    >> SERVER_TOP_HEROES
+                </h2>
+                
+                <div class="space-y-3">
+                    <% topPlayers.forEach((player, index) => { %>
+                        <div class="flex justify-between items-center bg-slate-800/40 p-4 border-l-2 <%= index === 0 ? 'border-retroGold shadow-[inset_0_0_10px_rgba(255,215,0,0.1)]' : 'border-slate-600' %> rounded hover:bg-slate-800 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold text-lg <%= index === 0 ? 'text-retroGold drop-shadow-[0_0_5px_rgba(255,215,0,0.8)]' : 'text-gray-500' %>">#<%= index + 1 %></span>
+                                <span class="<%= player.username === user.username ? 'text-white font-bold tracking-wide' : 'text-gray-400' %>">
+                                    <%= player.username %>
+                                </span>
+                            </div>
+                            <span class="text-retroGold font-bold text-sm tracking-wider"><%= player.total_points %> XP</span>
+                        </div>
+                    <% }) %>
+                </div>
+                
+                <div class="mt-6 text-center border-t border-slate-700 pt-4">
+                    <a href="/leaderboard" class="text-xs text-gray-400 hover:text-retroGold transition-colors tracking-widest">
+                        [ VIEW_FULL_RANKING ]
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
