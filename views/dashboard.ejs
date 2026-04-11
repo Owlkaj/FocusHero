@@ -23,18 +23,12 @@
             66% { transform: translate(-20px, 20px) scale(0.9); }
             100% { transform: translate(0px, 0px) scale(1); }
         }
-        .animate-blob {
-            animation: blob 10s infinite alternate ease-in-out;
-        }
-        /* Penundaan waktu agar cahayanya tidak bergerak bersamaan */
+        .animate-blob { animation: blob 10s infinite alternate ease-in-out; }
         .animation-delay-2000 { animation-delay: 2s; }
         .animation-delay-4000 { animation-delay: 4s; }
-
-        /* Garis grid modern tipis */
         .bg-grid-pattern {
             background-size: 40px 40px;
-            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                              linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
         }
     </style>
 </head>
@@ -46,6 +40,7 @@
         <div class="absolute top-[20%] right-[-10%] w-[400px] h-[400px] bg-purple-600/20 rounded-full mix-blend-screen filter blur-[100px] animate-blob animation-delay-2000"></div>
         <div class="absolute bottom-[-20%] left-[20%] w-[600px] h-[600px] bg-blue-600/20 rounded-full mix-blend-screen filter blur-[100px] animate-blob animation-delay-4000"></div>
     </div>
+    
     <nav class="flex justify-between items-center border-b border-retroBlue/30 pb-4 mb-8 relative z-10">
         <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-retroBlue to-blue-500 drop-shadow-[0_0_10px_rgba(0,240,255,0.8)] tracking-wider">
             >> FOCUS_HERO
@@ -139,6 +134,16 @@
         </div>
 
         <div class="space-y-6">
+            <div class="bg-slate-900/70 backdrop-blur-md border border-retroPurple/30 p-5 rounded-xl shadow-[0_0_15px_rgba(176,38,255,0.1)] hover:border-retroPurple transition-all group">
+                <a href="/history" class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-sm font-bold text-retroPurple tracking-widest drop-shadow-[0_0_5px_rgba(176,38,255,0.5)]">>> VIEW_HISTORY_LOGS</h2>
+                        <p class="text-xs text-gray-400 mt-1">Cek riwayat quest selesai</p>
+                    </div>
+                    <span class="text-retroPurple group-hover:translate-x-2 transition-transform">➔</span>
+                </a>
+            </div>
+
             <div class="bg-slate-900/70 backdrop-blur-md border border-retroGold/30 p-6 rounded-xl shadow-[0_0_20px_rgba(255,215,0,0.1)]">
                 <h2 class="text-lg font-bold text-retroGold mb-6 tracking-widest text-center drop-shadow-[0_0_8px_rgba(255,215,0,0.6)]">
                     >> SERVER_TOP_HEROES

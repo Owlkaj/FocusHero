@@ -22,6 +22,7 @@ exports.addHabit = (req, res) => {
     });
 };
 
+// Proses Selesaikan Quest (DONE)
 exports.completeHabit = (req, res) => {
     const habitId = req.params.id;
     const userId = req.session.userId;
@@ -46,38 +47,43 @@ exports.completeHabit = (req, res) => {
         db.query('UPDATE habits SET streak_count = streak_count + 1, last_completed = CURDATE() WHERE id = ?', [habitId], (err) => {
             if (err) throw err;
 
-            // Tambah 10 XP
-            db.query('UPDATE users SET total_points = total_points + 10 WHERE id = ?', [userId], (err) => {
-                if (err) throw err;
+            // --- BAGIAN BARU: CATAT KE habit_logs ---
+            db.query('INSERT INTO habit_logs (habit_id, date_completed) VALUES (?, CURDATE())', [habitId], (err) => {
+                if (err) console.error("Gagal mencatat log riwayat:", err);
 
-                // Cek XP terbaru untuk sistem BADGE
-                db.query('SELECT total_points FROM users WHERE id = ?', [userId], (err, userRes) => {
-                    const xp = userRes[0].total_points;
-                    let newBadge = null;
+                // Tambah 10 XP
+                db.query('UPDATE users SET total_points = total_points + 10 WHERE id = ?', [userId], (err) => {
+                    if (err) throw err;
 
-                    // Milestones Badge (Bisa Anda sesuaikan angkanya)
-                    if (xp >= 2000) newBadge = 'undefeated Fighter';
-                    else if (xp >= 1000) newBadge = 'Undying Lich';
-                    else if (xp >= 500) newBadge = 'Holy Paladin';
-                    else if (xp >= 200) newBadge = 'Golden Hero';
-                    else if (xp >= 100) newBadge = 'Silver Knight';
-                    else if (xp >= 50) newBadge = 'Bronze Adventurer';
+                    // Cek XP terbaru untuk sistem BADGE
+                    db.query('SELECT total_points FROM users WHERE id = ?', [userId], (err, userRes) => {
+                        const xp = userRes[0].total_points;
+                        let newBadge = null;
 
-                    if (newBadge) {
-                        // Cek apakah user sudah punya badge ini
-                        db.query('SELECT * FROM badges WHERE user_id = ? AND badge_name = ?', [userId, newBadge], (err, badgeRes) => {
-                            if (badgeRes.length === 0) {
-                                // Jika belum punya, berikan badgenya!
-                                db.query('INSERT INTO badges (user_id, badge_name) VALUES (?, ?)', [userId, newBadge], () => {
+                        // Milestones Badge
+                        if (xp >= 2000) newBadge = 'undefeated Fighter';
+                        else if (xp >= 1000) newBadge = 'Undying Lich';
+                        else if (xp >= 500) newBadge = 'Holy Paladin';
+                        else if (xp >= 200) newBadge = 'Golden Hero';
+                        else if (xp >= 100) newBadge = 'Silver Knight';
+                        else if (xp >= 50) newBadge = 'Bronze Adventurer';
+
+                        if (newBadge) {
+                            // Cek apakah user sudah punya badge ini
+                            db.query('SELECT * FROM badges WHERE user_id = ? AND badge_name = ?', [userId, newBadge], (err, badgeRes) => {
+                                if (badgeRes.length === 0) {
+                                    // Jika belum punya, berikan badgenya!
+                                    db.query('INSERT INTO badges (user_id, badge_name) VALUES (?, ?)', [userId, newBadge], () => {
+                                        res.redirect('/dashboard');
+                                    });
+                                } else {
                                     res.redirect('/dashboard');
-                                });
-                            } else {
-                                res.redirect('/dashboard');
-                            }
-                        });
-                    } else {
-                        res.redirect('/dashboard');
-                    }
+                                }
+                            });
+                        } else {
+                            res.redirect('/dashboard');
+                        }
+                    });
                 });
             });
         });
@@ -93,5 +99,39 @@ exports.deleteHabit = (req, res) => {
     db.query('DELETE FROM habits WHERE id = ? AND user_id = ?', [habitId, userId], (err) => {
         if (err) throw err;
         res.redirect('/dashboard');
+    });
+};
+
+// --- FUNGSI BARU: MENGAMBIL RIWAYAT QUEST UNTUK HALAMAN ARCHIVE ---
+exports.getHistory = (req, res) => {
+    const userId = req.session.userId;
+    
+    // Ambil data username untuk ditampilkan di judul halaman
+    db.query('SELECT username FROM users WHERE id = ?', [userId], (err, userRes) => {
+        if (err || userRes.length === 0) return res.redirect('/dashboard');
+        
+        const username = userRes[0].username;
+
+        // Query canggih: Menggabungkan (JOIN) tabel logs dan habits
+        const query = `
+            SELECT hl.date_completed, h.title 
+            FROM habit_logs hl
+            JOIN habits h ON hl.habit_id = h.id
+            WHERE h.user_id = ?
+            ORDER BY hl.date_completed DESC, hl.id DESC
+            LIMIT 50
+        `;
+
+        db.query(query, [userId], (err, logs) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send("Terjadi kesalahan pada database.");
+            }
+            
+            res.render('history', {
+                user: { username: username }, // Membungkus username agar terbaca oleh EJS
+                logs: logs
+            });
+        });
     });
 };
